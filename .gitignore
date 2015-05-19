@@ -31,4 +31,20 @@ Makefile*
 
 #QtCtreator Qml
 *.qmlproject.user
-*.qmlproject.user.*
+*.qmlproject.user.* 
+
+# Ignored directories
+beta
+.directory
+old
+
+# Other files
+*.bak
+*.zip
+*~
+
+# Binaries
+gensnapshot
+initmeta
+mysqlsync
+mysqltofile
