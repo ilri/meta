@@ -315,6 +315,15 @@ int exportToCSV(QSqlDatabase db,QString table, QSqlQuery dict, QSqlQuery data, Q
     return 0;
 }
 
+QString cleanString(QString value)
+{
+    QString res;
+    res = value;
+    res = res.replace('\"',"");
+    res = res.replace("'","");
+    return res;
+}
+
 QString fixString(QString value, int length)
 {
     int temp;
@@ -727,9 +736,9 @@ int exportToSPSS(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString table,
             SPSSType = "(A)";
         }
         if (dict.value(2).toString().toLower().indexOf("int") >= 0)
-            SPSSType = ""; //TODO: What happens to long types?
+            SPSSType = "";
         if (dict.value(2).toString().toLower().indexOf("decimal") >= 0)
-            SPSSType = "(2)";
+            SPSSType = "(3)";
         str = " " + field + " " + QString::number(start) + "-" + QString::number(start+(size-1)) + " " + SPSSType;
         out << str << "\n";
         start = start + (size-1);
@@ -746,16 +755,16 @@ int exportToSPSS(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString table,
         if (first)
         {
             if ( dict.value(1).toString() != "")
-                str = "  " + fixField(dict.value(0).toString()) + " \"" + dict.value(1).toString() + "\"";
+                str = "  " + fixField(dict.value(0).toString()) + " \"" + cleanString(dict.value(1).toString()) + "\"";
             else
-                str = "  " + fixField(dict.value(0).toString()) + " \"" + fixField(dict.value(0).toString()) + "\"";
+                str = "  " + fixField(dict.value(0).toString()) + " \"" + fixField(cleanString(dict.value(0).toString())) + "\"";
             first = false;
         }
         else
             if (dict.value(1).toString() != "")
-                str = " /" + fixField(dict.value(0).toString()) + " \"" + dict.value(1).toString() + "\"";
+                str = " /" + fixField(dict.value(0).toString()) + " \"" + cleanString(dict.value(1).toString()) + "\"";
             else
-                str = " /" + fixField(dict.value(0).toString()) + " \"" + fixField(dict.value(0).toString()) + "\"";
+                str = " /" + fixField(dict.value(0).toString()) + " \"" + fixField(cleanString(dict.value(0).toString())) + "\"";
 
         out << str << "\n";
         dict.next();
@@ -808,9 +817,9 @@ int exportToSPSS(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString table,
                     lkpvalue = lkpvalue.replace("'","");
 
                     if (!alfa)
-                        out << "  " + lkpdata.value(0).toString() + " \"" + lkpvalue + "\"" + "\n";
+                        out << "  " + lkpdata.value(0).toString() + " \"" + cleanString(lkpvalue) + "\"" + "\n";
                     else
-                        out << "  '" + lkpdata.value(0).toString() + "' \"" + lkpvalue + "\"" + "\n";
+                        out << "  '" + lkpdata.value(0).toString() + "' \"" + cleanString(lkpvalue) + "\"" + "\n";
                 }
             }
 
