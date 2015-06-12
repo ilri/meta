@@ -38,6 +38,7 @@ int exportToXML(QSqlQuery dict, QSqlQuery data, QString table, QString target)
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     out << "<?xml version=\'1.0\'encoding=\'UTF-8\'?>"<< "\n";
     out<<"<"<< table <<">"<< "\n";
 
@@ -88,6 +89,7 @@ int exportToJSON(QSqlQuery dict, QSqlQuery data, QString target) {
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
 
     //Loop through the data and process each row
     QString str;
@@ -171,6 +173,7 @@ int exportToSQL(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString target,
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     dict.first();
 
     QString str1;
@@ -194,6 +197,7 @@ int exportToSQL(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString target,
     }
 
     QTextStream cout(&file2);
+    cout.setCodec("UTF-8");
     dict.first();
 
     QString field;
@@ -280,6 +284,7 @@ int exportToCSV(QSqlDatabase db,QString table, QSqlQuery dict, QSqlQuery data, Q
     //log("Parsing heading for table " + table);
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     dict.first();
     QString str;
     QString value;
@@ -443,6 +448,7 @@ int exportToSTATA(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString table
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     QString str;
     QString value;
     QString field;
@@ -656,6 +662,7 @@ int exportToSPSS(QSqlDatabase db, QSqlQuery dict, QSqlQuery data, QString table,
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     QString str;
     QString value;
     QString field;
