@@ -111,22 +111,24 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
 
 
 
-
+    int auditIndex;
+    auditIndex = 0;
 
     sql = "SELECT tbl_cod FROM dict_tblinfo WHERE tbl_cod NOT LIKE 'v_%'"; //Excluse views in audit
     if (query.exec(sql))
     {
         while (query.next())
         {
+            auditIndex = auditIndex + 1;
             if (ignoreTables.indexOf(query.value(0).toString().toLower()) < 0)
             {
 
                 //Update trigger for MySQL-------------------------------------------------------------------
 
-                dropMyTriggers << "DROP TRIGGER audit_" + query.value(0).toString() +"_update;";
+                dropMyTriggers << "DROP TRIGGER audit_" + QString::number(auditIndex) +"_update;";
 
                 TriggerData << "delimiter $$";
-                TriggerData << "CREATE TRIGGER audit_" + query.value(0).toString() +"_update";
+                TriggerData << "CREATE TRIGGER audit_" + QString::number(auditIndex) +"_update";
                 TriggerData << "AFTER UPDATE ON " + query.value(0).toString();
                 TriggerData << "FOR EACH ROW BEGIN";
                 TriggerData << "DECLARE ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP();";
@@ -165,10 +167,10 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
 
                 //Insert trigger for MySQL-----------------------------------------------------------------------------------
 
-                dropMyTriggers << "DROP TRIGGER audit_" + query.value(0).toString() +"_insert;";
+                dropMyTriggers << "DROP TRIGGER audit_" + QString::number(auditIndex) +"_insert;";
 
                 TriggerData << "delimiter $$";
-                TriggerData << "CREATE TRIGGER audit_" + query.value(0).toString() +"_insert";
+                TriggerData << "CREATE TRIGGER audit_" + QString::number(auditIndex) +"_insert";
                 TriggerData << "AFTER INSERT ON " + query.value(0).toString();
                 TriggerData << "FOR EACH ROW BEGIN";
                 TriggerData << "DECLARE ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP();";
@@ -215,10 +217,10 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
 
                 //Delete trigger for MySQL----------------------------------------------------------------------------
 
-                dropMyTriggers << "DROP TRIGGER audit_" + query.value(0).toString() +"_delete;";
+                dropMyTriggers << "DROP TRIGGER audit_" + QString::number(auditIndex) +"_delete;";
 
                 TriggerData << "delimiter $$";
-                TriggerData << "CREATE TRIGGER audit_" + query.value(0).toString() +"_delete";
+                TriggerData << "CREATE TRIGGER audit_" + QString::number(auditIndex) +"_delete";
                 TriggerData << "AFTER DELETE ON " + query.value(0).toString();
                 TriggerData << "FOR EACH ROW BEGIN";
                 TriggerData << "DECLARE ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP();";
@@ -283,9 +285,9 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
                     litekeyData = litekeyData.left(litekeyData.length()-9) + ")";
                 }
 
-                dropLiteTriggers << "DROP TRIGGER audit_" + query.value(0).toString() + "_update;";
+                dropLiteTriggers << "DROP TRIGGER audit_" + QString::number(auditIndex) + "_update;";
 
-                TriggerLite << "CREATE TRIGGER audit_" + query.value(0).toString() + "_update";
+                TriggerLite << "CREATE TRIGGER audit_" + QString::number(auditIndex) + "_update";
                 TriggerLite << "AFTER UPDATE ON " + query.value(0).toString();
                 TriggerLite << "FOR EACH ROW BEGIN";
                 TriggerLite << "";
@@ -304,9 +306,9 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
 
                 //Insert trigger for SQLite---------------------------------------------------------------------------
 
-                dropLiteTriggers << "DROP TRIGGER audit_" + query.value(0).toString() + "_insert;";
+                dropLiteTriggers << "DROP TRIGGER audit_" + QString::number(auditIndex) + "_insert;";
 
-                TriggerLite << "CREATE TRIGGER audit_" + query.value(0).toString() + "_insert";
+                TriggerLite << "CREATE TRIGGER audit_" + QString::number(auditIndex) + "_insert";
                 TriggerLite << "AFTER INSERT ON " + query.value(0).toString();
                 TriggerLite << "FOR EACH ROW BEGIN";
                 TriggerLite << "";
@@ -349,9 +351,9 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
 
                 //Delete trigger for SQLite----------------------------------------------------------------------------------
 
-                dropLiteTriggers << "DROP TRIGGER audit_" + query.value(0).toString() + "_delete;";
+                dropLiteTriggers << "DROP TRIGGER audit_" + QString::number(auditIndex) + "_delete;";
 
-                TriggerLite << "CREATE TRIGGER audit_" + query.value(0).toString() + "_delete";
+                TriggerLite << "CREATE TRIGGER audit_" + QString::number(auditIndex) + "_delete";
                 TriggerLite << "AFTER DELETE ON " + query.value(0).toString();
                 TriggerLite << "FOR EACH ROW BEGIN";
                 TriggerLite << "";
