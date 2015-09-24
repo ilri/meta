@@ -46,7 +46,7 @@ void sqlimport::run()
     if (!outfile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
-    writeToFile(QString("BEGIN;\n").toAscii());
+    writeToFile(QString("BEGIN;\n").toUtf8());
 
     QFile file(inputFile);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -58,7 +58,7 @@ void sqlimport::run()
     {
         QString sqlLine = input.readLine();
 
-        totalbytes = totalbytes + sqlLine.toAscii().size();
+        totalbytes = totalbytes + sqlLine.toUtf8().size();
 
         process_line(sqlLine);
         emit processingLine(totalbytes);
@@ -79,7 +79,7 @@ void sqlimport::run()
     indexStatement = "-- Indexes to be created by the convertion\n";
 
     //outfile.write(indexStatement.toAscii());
-    writeToFile(indexStatement.toAscii());
+    writeToFile(indexStatement.toUtf8());
 
     int pos;
 
@@ -92,14 +92,14 @@ void sqlimport::run()
         indexStatement = indexStatement + " " + indexes[pos].indexFields;
         indexStatement = indexStatement + ";\n";
         //outfile.write(indexStatement.toAscii());
-        writeToFile(indexStatement.toAscii());
+        writeToFile(indexStatement.toUtf8());
     }
 
     if (translateConstraints)
     {
         indexStatement = "-- Triggers to be created by the convertion\n";
         //outfile.write(indexStatement.toAscii());
-        writeToFile(indexStatement.toAscii());
+        writeToFile(indexStatement.toUtf8());
 
         QString trigger;
         int pos2;
@@ -109,7 +109,7 @@ void sqlimport::run()
 
         indexStatement = "-- INSERT triggers\n";
         //outfile.write(indexStatement.toAscii());
-        writeToFile(indexStatement.toAscii());
+        writeToFile(indexStatement.toUtf8());
 
         bool notNullForeignKey;
 
@@ -174,7 +174,7 @@ void sqlimport::run()
                 trigger = trigger + " END;\n";
                 //Writes the trigger
                 //outfile.write(trigger.toAscii());
-                writeToFile(trigger.toAscii());
+                writeToFile(trigger.toUtf8());
             }
             else
             {
@@ -224,7 +224,7 @@ void sqlimport::run()
                 trigger = trigger + " END;\n";
                 //Writes the trigger
                 //outfile.write(trigger.toAscii());
-                writeToFile(trigger.toAscii());
+                writeToFile(trigger.toUtf8());
 
             }
         }
@@ -233,7 +233,7 @@ void sqlimport::run()
 
         indexStatement = "-- UPDATE triggers\n";
         //outfile.write(indexStatement.toAscii());
-        writeToFile(indexStatement.toAscii());
+        writeToFile(indexStatement.toUtf8());
 
         for (pos = 0; pos <= constraints.count()-1;pos++)
         {
@@ -296,7 +296,7 @@ void sqlimport::run()
                 trigger = trigger + " END;\n";
                 //Writes the trigger
                 //outfile.write(trigger.toAscii());
-                writeToFile(trigger.toAscii());
+                writeToFile(trigger.toUtf8());
             }
             else
             {
@@ -346,7 +346,7 @@ void sqlimport::run()
                 trigger = trigger + " END;\n";
                 //Writes the trigger
                 //outfile.write(trigger.toAscii());
-                writeToFile(trigger.toAscii());
+                writeToFile(trigger.toUtf8());
 
             }
         }
@@ -354,7 +354,7 @@ void sqlimport::run()
 
 
         indexStatement = "-- UPDATE parent triggers and DELETE triggers\n";
-        writeToFile(indexStatement.toAscii());
+        writeToFile(indexStatement.toUtf8());
 
         for (pos = 0; pos <= constraints.count()-1;pos++)
         {
@@ -410,7 +410,7 @@ void sqlimport::run()
                         trigger = trigger + " END;\n";
                         //Writes the trigger
                         //outfile.write(trigger.toAscii());
-                        writeToFile(trigger.toAscii());
+                        writeToFile(trigger.toUtf8());
 
                     }
                 }
@@ -462,7 +462,7 @@ void sqlimport::run()
                     trigger = trigger + " END;\n";
                     //Writes the trigger
                     //outfile.write(trigger.toAscii());
-                    writeToFile(trigger.toAscii());
+                    writeToFile(trigger.toUtf8());
                 }
                 if (constraints[pos].onDelete.contains("CASCADE"))
                 {
@@ -489,13 +489,13 @@ void sqlimport::run()
                     trigger = trigger + "; END;\n";
                     //Writes the trigger
                     //outfile.write(trigger.toAscii());
-                    writeToFile(trigger.toAscii());
+                    writeToFile(trigger.toUtf8());
                 }
                 if (constraints[pos].onDelete == "SET NULL")
                 {
                     indexStatement = "-- ON DELETE SET NULL FOR table " + constraints[pos].tableName + " is not supported yet!\n";
                     //outfile.write(indexStatement.toAscii());
-                    writeToFile(indexStatement.toAscii());
+                    writeToFile(indexStatement.toUtf8());
                 }
                 /*if (constraints[pos].onDelete == "NO ACTION")
                 {
@@ -507,7 +507,7 @@ void sqlimport::run()
         }
 
     }
-    writeToFile(QString("COMMIT;\n").toAscii());
+    writeToFile(QString("COMMIT;\n").toUtf8());
     outfile.flush();
     outfile.close();
     file.close();
@@ -634,7 +634,7 @@ void sqlimport::process_line(QString sqlLine)
                     {
                         lineData = lineData + "\n";
                         //outfile.write(lineData.toAscii());
-                        writeToFile(lineData.toAscii());
+                        writeToFile(lineData.toUtf8());
                         //outStream << lineData;
                     }
                 }
@@ -729,7 +729,7 @@ QString sqlimport::cleanSQL(QString sqlStatement)
         message = "-- WARNING! Autoincrement was removed from the following CREATE TABLE statement. You may need to add it manually\n";
         lineData = lineData.replace("AUTO_INCREMENT","");
         //outfile.write(message.toAscii());
-        writeToFile(message.toAscii());
+        writeToFile(message.toUtf8());
     }
 
     if (lineData.indexOf("COMMENT=") >=0)
@@ -946,7 +946,7 @@ void sqlimport::processSQL(QStringList sqlLines)
 
         sqlStatement = sqlStatement + "\n";
         //outfile.write(sqlStatement.toAscii());
-        writeToFile(sqlStatement.toAscii());
+        writeToFile(sqlStatement.toUtf8());
     }
     else
     {
@@ -983,7 +983,7 @@ void sqlimport::processInsert(QString insertStatement)
         values = InsertHead + values;
         values = values + ";\n";
         //outfile.write(values.toAscii());
-        writeToFile(values.toAscii());
+        writeToFile(values.toUtf8());
         startPos = temp2+1;
     }
     //Last insert
@@ -993,7 +993,7 @@ void sqlimport::processInsert(QString insertStatement)
     values = InsertHead + values;
     values = values + ";\n";
     //outfile.write(values.toAscii());
-    writeToFile(values.toAscii());
+    writeToFile(values.toUtf8());
 }
 
 void sqlimport::processKeyIndexes(QString tablename,QString sqlStatement,int startPos)

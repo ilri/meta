@@ -96,14 +96,8 @@ CREATE TABLE IF NOT EXISTS dict_relinfo (
   error_msg TEXT NULL,
   error_notes TEXT NULL,
   PRIMARY KEY (scm_cod, tbl_cod, clm_cod, rscm_cod, rtbl_cod, rclm_cod),
-  INDEX fk_dict_relinfo_dict_clminfo2_idx (rscm_cod ASC, rtbl_cod ASC, rclm_cod ASC),
   CONSTRAINT fk_dict_relinfo_dict_clminfo1
     FOREIGN KEY (scm_cod , tbl_cod , clm_cod)
-    REFERENCES dict_clminfo (scm_cod , tbl_cod , clm_cod)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_dict_relinfo_dict_clminfo2
-    FOREIGN KEY (rscm_cod , rtbl_cod , rclm_cod)
     REFERENCES dict_clminfo (scm_cod , tbl_cod , clm_cod)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)

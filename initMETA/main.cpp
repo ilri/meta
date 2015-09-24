@@ -12,8 +12,15 @@
 #include <QDir>
 
 QStringList tables;
-QSqlQuery references;
 QStringList ignoreTables;
+QString tblPrefix;
+
+struct refItem
+{
+  QString tableName;
+  QString RefTableName;
+};
+typedef refItem TrefItem;
 
 void log(QString message, bool newLine = true)
 {
@@ -31,19 +38,18 @@ int getFieldIndex(QSqlQuery query,QString fieldName)
 }
 
 //Get the minimum index of parent of a table
-int getMaxParentIndex(QString table)
+int getMaxParentIndex(QList<TrefItem > references, QString table)
 {
     int res;
     res = -1;
-    references.first();
-    while (references.isValid())
+
+    for(int item =0; item < references.count(); item++)
     {
-        if (references.value(0).toString() == table)
+        if (references[item].tableName == table)
         {
-            if (tables.indexOf(references.value(1).toString()) >= res)
-                res = tables.indexOf(references.value(1).toString());
-        }
-        references.next();
+            if (tables.indexOf(references[item].RefTableName) >= res)
+                res = tables.indexOf(references[item].RefTableName);
+        }        
     }
     return res;
 }
@@ -552,11 +558,12 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
         tablename = query.value(0).toString().trimmed();
         if (!isIgnoreTable(tablename))
         {
-            if (tablename.toLower().left(3) == "lkp")
+            if (tablename.toLower().replace(tblPrefix + "_","").left(3) == "lkp")
                 tbllkp = 1;
             else
                 tbllkp = 0;
-            sqlStr = "INSERT INTO dict_tblinfo (tbl_cod,tbl_des,tbl_lkp,tbl_pos) VALUES (";
+            sqlStr = "INSERT INTO dict_tblinfo (scm_cod,tbl_cod,tbl_des,tbl_lkp,tbl_pos) VALUES (";
+            sqlStr = sqlStr + "'" + mydb.databaseName().trimmed().toLower() + "',";
             sqlStr = sqlStr + "'" + tablename.toLower() + "',";
             sqlStr = sqlStr + "'Description of " + tablename + "',";
             sqlStr = sqlStr + "" + QString::number(tbllkp) + "," + QString::number(tables.indexOf(tablename)) + ")";
@@ -581,7 +588,8 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
                 else
                     key = false;
 
-                sqlStr = "INSERT INTO dict_clminfo (tbl_cod,clm_cod,clm_pos,clm_des,clm_key,clm_typ,clm_maindesc) VALUES (";
+                sqlStr = "INSERT INTO dict_clminfo (scm_cod,tbl_cod,clm_cod,clm_pos,clm_des,clm_key,clm_typ,clm_maindesc) VALUES (";
+                sqlStr = sqlStr + "'" + mydb.databaseName().trimmed().toLower() + "',";
                 sqlStr = sqlStr + "'" + tablename.toLower() + "',";
                 sqlStr = sqlStr + "'" + fieldname + "',";
                 sqlStr = sqlStr + QString::number(poscol) + ",";
@@ -631,7 +639,7 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
         if (!isIgnoreTable(tablename))
         {
             sqlStr = "select table_name,column_name,REFERENCED_TABLE_NAME,";
-            sqlStr = sqlStr + "REFERENCED_COLUMN_NAME,CONSTRAINT_NAME from ";
+            sqlStr = sqlStr + "REFERENCED_COLUMN_NAME,CONSTRAINT_NAME,REFERENCED_TABLE_SCHEMA from ";
             sqlStr = sqlStr + "information_schema.KEY_COLUMN_USAGE where ";
             sqlStr = sqlStr + "table_schema = '" + mydb.databaseName() + "' and ";
             sqlStr = sqlStr + "table_name = '" + tablename + "' and ";
@@ -642,7 +650,9 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
             query3.exec(sqlStr);
             while (query3.next())
             {
-                sqlStr = "INSERT INTO dict_relinfo (tbl_cod,clm_cod,rtbl_cod,rclm_cod,cnt_name,error_msg,error_notes) VALUES (";
+                sqlStr = "INSERT INTO dict_relinfo (scm_cod,rscm_cod,tbl_cod,clm_cod,rtbl_cod,rclm_cod,cnt_name,error_msg,error_notes) VALUES (";
+                sqlStr = sqlStr + "'" + mydb.databaseName().trimmed().toLower() + "',";
+                sqlStr = sqlStr + "'" + query3.value(5).toString().trimmed().toLower() + "',";
                 sqlStr = sqlStr + "'" + query3.value(0).toString().trimmed().toLower() + "',";
                 sqlStr = sqlStr + "'" + query3.value(1).toString().trimmed() + "',";
                 sqlStr = sqlStr + "'" + query3.value(2).toString().trimmed().toLower() + "',";
@@ -730,8 +740,9 @@ int createMETATables(QSqlDatabase mydb)
 }
 
 //Fillup the QStringList of tables in insertion order
-int getTableOrder(QSqlDatabase db)
-{
+int getTableOrder()
+{    
+    QSqlDatabase db = QSqlDatabase::database("jambo");
     QSqlQuery qtables(db);
     QString sql;
     //Get all the tables that are parents
@@ -758,8 +769,16 @@ int getTableOrder(QSqlDatabase db)
     sql = sql + " WHERE table_schema = '" + db.databaseName() + "' AND";
     sql = sql + " REFERENCED_TABLE_NAME is not null)";
     sql = sql + " group by table_name,REFERENCED_TABLE_NAME";
-    references = QSqlQuery(db);
-    references.exec(sql);
+
+    QList<TrefItem > references;
+    qtables.exec(sql);
+    while (qtables.next())
+    {
+        TrefItem item;
+        item.tableName = qtables.value(0).toString();
+        item.RefTableName = qtables.value(1).toString();
+        references.append(item);
+    }
 
     //Because a parent table can also be a child we need to organize the list so childs are after parents
     int pos;
@@ -768,7 +787,7 @@ int getTableOrder(QSqlDatabase db)
     for (pos = 0; pos <= tables.count()-1; pos++)
     {
         //Get the maximum index if the parent of this table
-        parentIndex = getMaxParentIndex(tables[pos]);
+        parentIndex = getMaxParentIndex(references,tables[pos]);
         if (pos < parentIndex) //If the position of this table is before the max parent index
         {
             table = tables[pos]; //Get the table name
@@ -794,6 +813,7 @@ int getTableOrder(QSqlDatabase db)
             tables.append(qtables.value(0).toString());
         }
     }
+
     return 0;
 }
 
@@ -802,13 +822,14 @@ int main(int argc, char *argv[])
 {
     QString title;
     title = title + "****************************************************************** \n";
-    title = title + " * MySQLtoFile 1.0                                                * \n";
-    title = title + " * This tool exports a table in a MySQL schema to various file    * \n";
-    title = title + " * formats like STATA, SPSS, CSV (tab delimited), JSON and XML    * \n";
-    title = title + " * This tool is part of CSPro Tools (c) ILRI, 2013                * \n";
+    title = title + " * InitMETA 1.0                                                   * \n";
+    title = title + " * This tool creates the META dictionary tables in the targe      * \n";
+    title = title + " * schema. Also creates the audit scripts for both MySQL and      * \n";
+    title = title + " * SQLite                                                         * \n";
+    title = title + " * This tool is part of META (c) ILRI, 2013,2014,2015             * \n";
     title = title + " ****************************************************************** \n";
 
-    TCLAP::CmdLine cmd(title.toAscii().data(), ' ', "1.0 (Beta 1)");
+    TCLAP::CmdLine cmd(title.toUtf8().data(), ' ', "1.0 (Beta 1)");
     //Required arguments
     TCLAP::ValueArg<std::string> hostArg("H","host","MySQL host. Default localhost",false,"localhost","string");
     TCLAP::ValueArg<std::string> portArg("P","port","MySQL port. Default 3306.",false,"3306","string");
@@ -816,6 +837,7 @@ int main(int argc, char *argv[])
     TCLAP::ValueArg<std::string> passArg("p","password","Password to connect to MySQL",true,"","string");
     TCLAP::ValueArg<std::string> schemaArg("s","schema","Schema in MySQL",true,"","string");
     TCLAP::ValueArg<std::string> auditArg("a","audit","Target directory for the audit files. Default ./audit (created if not exists)",false,"./audit","string");
+    TCLAP::ValueArg<std::string> prefixArg("x","prefix","Table prefix",false,"","string");
 
 
     TCLAP::SwitchArg createSwitch("c","create","Create META dictionary tables", cmd, false);
@@ -830,6 +852,7 @@ int main(int argc, char *argv[])
     cmd.add(passArg);
     cmd.add(schemaArg);
     cmd.add(auditArg);
+    cmd.add(prefixArg);
 
     cmd.parse( argc, argv );
 
@@ -850,6 +873,7 @@ int main(int argc, char *argv[])
     QString pass = QString::fromUtf8(passArg.getValue().c_str());
     QString schema = QString::fromUtf8(schemaArg.getValue().c_str());
     QString auditPath = QString::fromUtf8(auditArg.getValue().c_str());
+    tblPrefix = QString::fromUtf8(prefixArg.getValue().c_str());
 
 
     //Dictionary tables
@@ -884,9 +908,8 @@ int main(int argc, char *argv[])
     ignoreTables << "dict_dctiso639";
 
 
-
     {
-        QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+        QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL","jambo");
         db.setHostName(host);
         db.setPort(port.toInt());
         db.setDatabaseName(schema);
@@ -900,8 +923,9 @@ int main(int argc, char *argv[])
         deletePrevious = false;
         QString data;
         if (db.open())
-        {
-            getTableOrder(db);
+        {            
+            getTableOrder();
+
             if (createMETA)
             {
                 log("Are you sure that you want to create META's tables? This will delete any previous META information INCLUDING the audit. (Y/N): ",false);
@@ -945,7 +969,8 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-
-
+    log("Removing database");
+    QSqlDatabase::removeDatabase("jambo");
+    log("Existing without error");
     return 0;
 }
