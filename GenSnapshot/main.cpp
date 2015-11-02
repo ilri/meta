@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
     title = title + " * This tool is part of META (c) ILRI, 2013                       * \n";
     title = title + " ****************************************************************** \n";
 
-    TCLAP::CmdLine cmd(title.toAscii().constData(), ' ', "1.0 (Beta 1)");
+    TCLAP::CmdLine cmd(title.toUtf8().constData(), ' ', "1.0 (Beta 1)");
     //Required arguments
     TCLAP::ValueArg<std::string> hostArg("H","host","MySQL Host. Default localhost",false,"localhost","string");
     TCLAP::ValueArg<std::string> portArg("P","port","MySQL Port. Default 3306",false,"3306","string");

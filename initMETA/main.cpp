@@ -563,8 +563,7 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
             if (!query2.exec(sqlStr))
             {
                 log("Error inserting in Table Information");
-                log(query2.lastError().databaseText());
-                return 1;
+                log(query2.lastError().databaseText());                
             }
 
             sqlStr = "desc " + tablename;
@@ -609,8 +608,7 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
                 if (!query4.exec(sqlStr))
                 {
                     log("Error inserting in Column Information");
-                    log(query4.lastError().databaseText());
-                    return 1;
+                    log(query4.lastError().databaseText());                    
                 }
 
             }
@@ -808,7 +806,7 @@ int main(int argc, char *argv[])
     title = title + " * This tool is part of CSPro Tools (c) ILRI, 2013                * \n";
     title = title + " ****************************************************************** \n";
 
-    TCLAP::CmdLine cmd(title.toAscii().data(), ' ', "1.0 (Beta 1)");
+    TCLAP::CmdLine cmd(title.toUtf8().data(), ' ', "1.0 (Beta 1)");
     //Required arguments
     TCLAP::ValueArg<std::string> hostArg("H","host","MySQL host. Default localhost",false,"localhost","string");
     TCLAP::ValueArg<std::string> portArg("P","port","MySQL port. Default 3306.",false,"3306","string");
