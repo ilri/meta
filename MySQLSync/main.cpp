@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <QtGui/QApplication>
 #include <tclap/CmdLine.h>
 #include <QSqlDatabase>
 #include <QSqlQuery>
