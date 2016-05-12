@@ -329,10 +329,18 @@ QString cleanString(QString value)
     return res;
 }
 
-QString fixString(QString value, int length)
+QString fixString(QString value, int length, bool isNull = false)
 {
     int temp;
-    temp = length - value.trimmed().length();
+    if (!isNull)
+        temp = length - value.trimmed().length();
+    else
+    {
+        if (value == " ")
+            temp = length - 1;
+        else
+            temp = length - value.trimmed().length();
+    }
     QString spaces;
     for (int pos = 1; pos <= temp; pos++)
         spaces = spaces + " ";
