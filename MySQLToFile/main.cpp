@@ -1006,7 +1006,7 @@ int main(int argc, char *argv[])
     TCLAP::ValueArg<std::string> tableArg("t","table","Table to export. Default ALL",false,"ALL","string");
     TCLAP::ValueArg<std::string> destArg("d","destination","Destination directory",true,"","string");
     TCLAP::ValueArg<std::string> outArg("o","output","Output type: STATA, SPSS, CSV (tab delimited), JSON or XML. Default CSV",false,"CSV","string");
-    TCLAP::ValueArg<std::string> nullArg("n","nullValue","In case of NULL use this value. Default 0",false,"0","string");
+    TCLAP::ValueArg<std::string> nullArg("n","nullValue","In case of NULL use this value. Default [space] for STATA and SPSS, 0 for others",false,"","string");
 
     TCLAP::SwitchArg remoteSwitch("T","protected","Include protected", cmd, false);
 
@@ -1043,6 +1043,13 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (nullValue = "")
+    {
+        if ((output == "STATA") || (output == "SPSS"))
+            nullValue = " ";
+        else
+            nullValue = "0";
+    }
 
     QDir dir;
     if (!dir.exists(dest))
