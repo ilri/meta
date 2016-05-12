@@ -1043,7 +1043,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (nullValue = "")
+    if (nullValue == "")
     {
         if ((output == "STATA") || (output == "SPSS"))
             nullValue = " ";
