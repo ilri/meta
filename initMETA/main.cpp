@@ -12,7 +12,6 @@
 #include <QDir>
 
 QStringList tables;
-QSqlQuery references;
 QStringList ignoreTables;
 
 void log(QString message, bool newLine = true)
@@ -31,7 +30,7 @@ int getFieldIndex(QSqlQuery query,QString fieldName)
 }
 
 //Get the minimum index of parent of a table
-int getMaxParentIndex(QString table)
+int getMaxParentIndex(QSqlQuery references, QString table)
 {
     int res;
     res = -1;
@@ -732,6 +731,7 @@ int getTableOrder(QSqlDatabase db)
 {
     QSqlQuery qtables(db);
     QString sql;
+    QSqlQuery references = QSqlQuery(db);
     //Get all the tables that are parents
     sql = "SELECT DISTINCT REFERENCED_TABLE_NAME FROM information_schema.KEY_COLUMN_USAGE";
     sql = sql + " WHERE table_schema = '" + db.databaseName() + "' AND";
@@ -756,7 +756,6 @@ int getTableOrder(QSqlDatabase db)
     sql = sql + " WHERE table_schema = '" + db.databaseName() + "' AND";
     sql = sql + " REFERENCED_TABLE_NAME is not null)";
     sql = sql + " group by table_name,REFERENCED_TABLE_NAME";
-    references = QSqlQuery(db);
     references.exec(sql);
 
     //Because a parent table can also be a child we need to organize the list so childs are after parents
@@ -766,7 +765,7 @@ int getTableOrder(QSqlDatabase db)
     for (pos = 0; pos <= tables.count()-1; pos++)
     {
         //Get the maximum index if the parent of this table
-        parentIndex = getMaxParentIndex(tables[pos]);
+        parentIndex = getMaxParentIndex(references,tables[pos]);
         if (pos < parentIndex) //If the position of this table is before the max parent index
         {
             table = tables[pos]; //Get the table name
