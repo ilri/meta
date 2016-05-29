@@ -138,15 +138,21 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
                 mykeyData = "CONCAT(";
 
                 QString myNoKeyData;
-
+                bool hasKeys;
+                hasKeys = false;
                 sql = "SELECT clm_cod FROM dict_clminfo WHERE tbl_cod = '"  + query.value(0).toString() + "' AND clm_key = 1";
                 if (query2.exec(sql))
                 {
                     while (query2.next())
                     {
                         mykeyData = mykeyData + "'(" + query2.value(0).toString() + ")',OLD." + query2.value(0).toString() + ",',',";
+                        hasKeys = true;
                     }
                     mykeyData = mykeyData.left(mykeyData.length()-5) + ")";
+                }
+                if (!hasKeys)
+                {
+                    mykeyData = "rowuuid";
                 }
 
                 sql = "SELECT clm_cod FROM dict_clminfo WHERE tbl_cod = '"  + query.value(0).toString() + "' ORDER BY clm_key,clm_pos DESC"; // AND clm_key = 0
@@ -177,6 +183,7 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
                 TriggerData << "";
 
                 //Getting the key data of the deleted record
+                hasKeys = false;
                 sql = "SELECT clm_cod FROM dict_clminfo WHERE tbl_cod = '"  + query.value(0).toString() + "' AND clm_key = 1";
                 if (query2.exec(sql))
                 {
@@ -184,9 +191,14 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
                     while (query2.next())
                     {
                         mykeyData = mykeyData + "'(" + query2.value(0).toString() + ")',NEW." + query2.value(0).toString() + ",',',";
+                        hasKeys = true;
                     }
                 }
                 mykeyData = mykeyData.left(mykeyData.length()-5) + ")";
+                if (!hasKeys)
+                {
+                    mykeyData = "rowuuid";
+                }
 
                 // Getting the non-key data of the deleted record
                 // The non-key data is represented as Hexadecimal character values to avoid conflicts with controlling characters like () and ,
@@ -227,6 +239,7 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
                 TriggerData << "";
 
                 //Getting the key data of the deleted record
+                hasKeys = false;
                 sql = "SELECT clm_cod FROM dict_clminfo WHERE tbl_cod = '"  + query.value(0).toString() + "' AND clm_key = 1";
                 if (query2.exec(sql))
                 {
@@ -234,9 +247,15 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
                     while (query2.next())
                     {
                         mykeyData = mykeyData + "'(" + query2.value(0).toString() + ")',OLD." + query2.value(0).toString() + ",',',";
+                        hasKeys = true;
                     }
                 }
                 mykeyData = mykeyData.left(mykeyData.length()-5) + ")";
+
+                if (!hasKeys)
+                {
+                    mykeyData = "rowuuid";
+                }
 
                 // Getting the non-key data of the deleted record
                 // The non-key data is represented as Hexadecimal values to avoid conflicts with controlling characters like () and ,
@@ -557,7 +576,7 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
                 tbllkp = 0;
             sqlStr = "INSERT INTO dict_tblinfo (tbl_cod,tbl_des,tbl_lkp,tbl_pos) VALUES (";
             sqlStr = sqlStr + "'" + tablename.toLower() + "',";
-            sqlStr = sqlStr + "'Description of " + tablename + "',";
+            sqlStr = sqlStr + "'" + tablename.toLower() + "',";
             sqlStr = sqlStr + "" + QString::number(tbllkp) + "," + QString::number(tables.indexOf(tablename)) + ")";
             if (!query2.exec(sqlStr))
             {
@@ -583,7 +602,7 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
                 sqlStr = sqlStr + "'" + tablename.toLower() + "',";
                 sqlStr = sqlStr + "'" + fieldname + "',";
                 sqlStr = sqlStr + QString::number(poscol) + ",";
-                sqlStr = sqlStr + "'Description of " + fieldname + "',";
+                sqlStr = sqlStr + "'" + fieldname.toLower() + "',";
                 if (key)
                     sqlStr = sqlStr + "1,";
                 else
