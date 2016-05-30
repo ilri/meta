@@ -515,6 +515,8 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
     QSqlQuery query(mydb);
     QStringList sqls;
 
+    query.exec("START TRANSACTION");
+
     int pos;
     bool error;
     error = false;
@@ -678,7 +680,7 @@ int loadMETATables(QSqlDatabase mydb, bool deletePrevious, bool includeViews)
             }
         }
     }
-
+    query.exec("COMMIT");
     if (!error)
         log("META's tables sucessfully loaded");
     return 0;
@@ -898,7 +900,6 @@ int main(int argc, char *argv[])
     ignoreTables << "dict_iso639";
     ignoreTables << "dict_lkpiso639";
     ignoreTables << "dict_dctiso639";
-
 
 
     {
