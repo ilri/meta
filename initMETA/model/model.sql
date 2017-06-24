@@ -36,7 +36,7 @@ COMMENT = 'Groups. Used to group tables. Optional. Useful in big schema' /* comm
 
 
 CREATE TABLE  dict_tblinfo (
-  tbl_cod VARCHAR(60) NOT NULL,
+  tbl_cod VARCHAR(120) NOT NULL,
   tbl_pos INT(11) NULL DEFAULT '-1',
   tbl_des TEXT NULL DEFAULT NULL,
   tbl_mdt TEXT NULL DEFAULT NULL,
@@ -61,12 +61,12 @@ COMMENT = 'Information about the tables in the schema';
 
 
 CREATE TABLE  dict_clminfo (
-  tbl_cod VARCHAR(60) NOT NULL,
-  clm_cod VARCHAR(60) NOT NULL,
+  tbl_cod VARCHAR(120) NOT NULL,
+  clm_cod VARCHAR(120) NOT NULL,
   clm_pos INT(11) NULL DEFAULT NULL,
   clm_des TEXT NULL DEFAULT NULL,
   clm_mtd TEXT NULL DEFAULT NULL,
-  clm_typ VARCHAR(60) NULL DEFAULT NULL,
+  clm_typ VARCHAR(120) NULL DEFAULT NULL,
   clm_key TINYINT(1) NULL DEFAULT NULL,
   clm_htmlwidth INT(11) NULL DEFAULT 150,
   clm_htmlalign VARCHAR(10) NULL DEFAULT 'left',
@@ -91,10 +91,10 @@ COMMENT = 'Information about each column in a table.';
 
 
 CREATE TABLE  dict_relinfo (
-  tbl_cod VARCHAR(60) NOT NULL,
-  clm_cod VARCHAR(60) NOT NULL,
-  rtbl_cod VARCHAR(60) NOT NULL,
-  rclm_cod VARCHAR(60) NOT NULL,
+  tbl_cod VARCHAR(120) NOT NULL,
+  clm_cod VARCHAR(120) NOT NULL,
+  rtbl_cod VARCHAR(120) NOT NULL,
+  rclm_cod VARCHAR(120) NOT NULL,
   cnt_name VARCHAR(128) NULL,
   error_msg TEXT NULL,
   error_notes TEXT NULL,
@@ -126,8 +126,8 @@ CREATE TABLE  audit_log (
   audit_date TIMESTAMP NULL,
   audit_action VARCHAR(6) NULL,
   audit_user VARCHAR(120) NULL,
-  audit_table VARCHAR(60) NULL,
-  audit_column VARCHAR(60) NULL,
+  audit_table VARCHAR(120) NULL,
+  audit_column VARCHAR(120) NULL,
   audit_key VARCHAR(500) NULL,
   audit_oldvalue VARCHAR(500) NULL,
   audit_newvalue VARCHAR(500) NULL,
@@ -164,9 +164,9 @@ CREATE TABLE  dict_dctiso639 (
   trans_id INT NOT NULL AUTO_INCREMENT,
   lang_cod VARCHAR(7) NOT NULL,
   trans_des TEXT NULL,
-  tblinfo_cod VARCHAR(60) NULL,
-  tbl_cod VARCHAR(60) NULL,
-  clm_cod VARCHAR(60) NULL,
+  tblinfo_cod VARCHAR(120) NULL,
+  tbl_cod VARCHAR(120) NULL,
+  clm_cod VARCHAR(120) NULL,
   PRIMARY KEY (trans_id),
   INDEX fk_dict_ISO639_dict_tblinfo1_idx (tblinfo_cod ASC),
   INDEX fk_dict_ISO639_dict_clminfo1_idx (tbl_cod ASC, clm_cod ASC),
@@ -198,7 +198,7 @@ COMMENT = 'Store the dictionary descriptions (Names of tables and colum' /* comm
 
 
 CREATE TABLE  dict_lkpiso639 (
-  tbl_cod VARCHAR(60) NOT NULL,
+  tbl_cod VARCHAR(120) NOT NULL,
   lang_cod VARCHAR(7) NOT NULL,
   lkp_value INT(11) NOT NULL,
   lkp_desc VARCHAR(120) NULL,

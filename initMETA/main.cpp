@@ -78,8 +78,8 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
     TriggerData << "audit_date TIMESTAMP NULL ,";
     TriggerData << "audit_action VARCHAR(6) NULL ,";
     TriggerData << "audit_user VARCHAR(120) NULL ,";
-    TriggerData << "audit_table VARCHAR(60) NULL ,";
-    TriggerData << "audit_column VARCHAR(60) NULL ,";
+    TriggerData << "audit_table VARCHAR(120) NULL ,";
+    TriggerData << "audit_column VARCHAR(120) NULL ,";
     TriggerData << "audit_key VARCHAR(500) NULL ,";
     TriggerData << "audit_oldvalue VARCHAR(500) NULL ,";
     TriggerData << "audit_newvalue VARCHAR(500) NULL ,";
@@ -99,8 +99,8 @@ int createMETAAudit(QSqlDatabase mydb, QString auditDir)
     TriggerLite << "audit_date VARCHAR(120) NULL ,";
     TriggerLite << "audit_action VARCHAR(6) NULL ,";
     TriggerLite << "audit_user VARCHAR(120) NULL ,";
-    TriggerLite << "audit_table VARCHAR(60) NULL ,";
-    TriggerLite << "audit_column VARCHAR(60) NULL ,";
+    TriggerLite << "audit_table VARCHAR(120) NULL ,";
+    TriggerLite << "audit_column VARCHAR(120) NULL ,";
     TriggerLite << "audit_key VARCHAR(500) NULL ,";
     TriggerLite << "audit_oldvalue VARCHAR(500) NULL ,";
     TriggerLite << "audit_newvalue VARCHAR(500) NULL ,";
