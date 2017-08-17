@@ -722,16 +722,6 @@ QString sqlimport::cleanSQL(QString sqlStatement)
     QString lineData;
     lineData = sqlStatement;
 
-    if (lineData.indexOf("AUTO_INCREMENT") >=0)
-    {
-        QString message;
-        warnings = true;
-        message = "-- WARNING! Autoincrement was removed from the following CREATE TABLE statement. You may need to add it manually\n";
-        lineData = lineData.replace("AUTO_INCREMENT","");
-        //outfile.write(message.toAscii());
-        writeToFile(message.toUtf8());
-    }
-
     if (lineData.indexOf("COMMENT=") >=0)
     {
         int temp;
@@ -847,6 +837,16 @@ QString sqlimport::cleanSQL(QString sqlStatement)
         }
     }
 
+    if (lineData.indexOf("AUTO_INCREMENT") >=0)
+    {
+        QString message;
+        warnings = true;
+        message = "-- WARNING! Autoincrement was removed from the following CREATE TABLE statement. You may need to add it manually\n";
+        lineData = lineData.replace("AUTO_INCREMENT","");
+        //outfile.write(message.toAscii());
+        writeToFile(message.toUtf8());
+    }
+
     if (lineData.indexOf("DEFAULT CHARSET") >=0)
     {
         int temp;
@@ -879,6 +879,16 @@ QString sqlimport::cleanSQL(QString sqlStatement)
             temp2 = lineData.lastIndexOf(";");
             lineData = lineData.remove(temp,temp2-temp);
         }
+    }
+
+    //Resolve Unique Key in MySQL moving to SQLite
+    if (lineData.indexOf("UNIQUE KEY") >=0)
+    {
+        int temp;
+        int temp2;
+        temp = lineData.indexOf("UNIQUE KEY");
+        temp2 = lineData.indexOf("(",temp);
+        lineData = lineData.remove(temp+7,temp2-temp-7);
     }
 
     lineData = lineData.replace("IF NOT EXISTS ","");
