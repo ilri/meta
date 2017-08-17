@@ -152,6 +152,7 @@ int genSnapHost(QSqlDatabase db, QSqlDatabase dblite, QString auditFile, QString
                 {
                     log("Error executing statement");
                     log(creates.lastError().databaseText());
+                    log(line);
                     creates.exec("ROLLBACK;");
                     file.close();
                     return 1;
