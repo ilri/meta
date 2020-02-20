@@ -86,7 +86,7 @@ $ ./mysqlsync -u my_user -p my_pass -s my_schema -S my_snapshot_file.sqlite -l p
 META was built using:
 
 - [C++](https://isocpp.org/), a general-purpose programming language.
-- [Qt 4](https://www.qt.io/), a cross-platform application framework.
+- [Qt 5](https://www.qt.io/), a cross-platform application framework.
 - [TClap](http://tclap.sourceforge.net/), a small, flexible library that provides a simple interface for defining and accessing command line arguments.
 
 
