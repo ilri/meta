@@ -1,11 +1,12 @@
 # META
 META is a toolbox for managing research data in MySQL databases. It comprises of four command line tools performing different tasks. The toolbox is cross-platform and can be build in Windows, Linux and Mac. 
 
-## The toolbox
-- 
-###InitMETA
+## The Toolbox
+
+### InitMETA
 InitMETA initializes METAS's dictionary tables in a MySQL schema and generates the audit script files for both MySQL and snapshot file (SQLite).
-#### *Parameters*
+
+#### Parameters
   - H - MySQL host server. Default is localhost
   - P - MySQL port. Default 3306
   - s - Schema to be initialized
@@ -17,15 +18,16 @@ InitMETA initializes METAS's dictionary tables in a MySQL schema and generates t
   - v - Include views in the dictionary data
   - a - Target directory for the audit log script files
 
- ### *Example*
-  ```sh
+##### Example
+
+```console
 $ ./initmeta -u my_user -p my_pass -s my_schema -c -l -u ./my_audit_directory
 ```
 
-- 
-###MySQLToFile
+### MySQLToFile
 MySQLToFile converts a MySQL schema (with META's dictionary tables) into common human readable formats like STATA, SPSS and CSV; and interoperable formats like XML, JSON and SQL.
-#### *Parameters*
+
+#### Parameters
   - H - MySQL host server. Default is localhost
   - P - MySQL port. Default 3306
   - s - Schema to be converted
@@ -37,15 +39,16 @@ MySQLToFile converts a MySQL schema (with META's dictionary tables) into common 
   - n - Value to be used in case of NULL. Default is 0 (cero)
   - T - Include protected fields. In META you can define fields that contains sensitive data. By default MySQLToFile excluse such fields.
 
- ### *Example*
-  ```sh
+##### Example
+
+```console
 $ ./mysqltofile -u my_user -p my_pass -s my_schema -d ./my_target_directory -o STATA -n ""
 ```
 
-- 
-###GenSnapshot
+### GenSnapshot
 GenSnapshot converts a MySQL schema (with META's dictionary tables) into a SQLite database (snapshot file) for off-line cleaning. The snapshot file records any changes in the data that later on could be synchronized against the MySQL server using *MySQLSync*.
-#### *Parameters*
+
+#### Parameters
   - H - MySQL host server. Default is localhost
   - P - MySQL port. Default 3306
   - s - Schema to be converted
@@ -54,15 +57,16 @@ GenSnapshot converts a MySQL schema (with META's dictionary tables) into a SQLit
   - a - Input SQLite audit file created by InitMETA
   - o - Target SQLite file
 
- ### *Example*
-  ```sh
+##### Example
+
+```console
 $ ./gensnapshot -u my_user -p my_pass -s my_schema -a ./path_to_my_audit_file.sql -o my_snapshot_file.sqlite
 ```
 
-- 
-###MySQLSync
+### MySQLSync
 MySQLSync synchronizes the changes made in a snapshot file against the data in the MySQL server. It generates two files 1) an output file with warnings and errors occurring during the synchronization in CSV format, and 2) an script file containing any INSERT, DELETE or UPDATE performed in the server. 
-#### *Parameters*
+
+#### Parameters
   - H - MySQL host server. Default is localhost
   - P - MySQL port. Default 3306
   - s - Schema to be converted
@@ -72,8 +76,9 @@ MySQLSync synchronizes the changes made in a snapshot file against the data in t
   - l - Output log file
   - o - Output SQL script file
 
- ### *Example*
-  ```sh
+##### Example
+
+```console
 $ ./mysqlsync -u my_user -p my_pass -s my_schema -S my_snapshot_file.sqlite -l path_to_my_log_file.CSV -o path_to_my_script_file.sql
 ```
 
