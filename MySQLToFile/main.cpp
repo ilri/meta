@@ -993,7 +993,7 @@ int main(int argc, char *argv[])
     title = title + " * MySQLtoFile 1.0                                                * \n";
     title = title + " * This tool exports a table in a MySQL schema to various file    * \n";
     title = title + " * formats like STATA, SPSS, CSV (tab delimited), JSON and XML    * \n";
-    title = title + " * This tool is part of CSPro Tools (c) ILRI, 2013                * \n";
+    title = title + " * This tool is part of META (c) ILRI, 2013                * \n";
     title = title + " ****************************************************************** \n";
 
     TCLAP::CmdLine cmd(title.toUtf8().data(), ' ', "1.0 (Beta 1)");

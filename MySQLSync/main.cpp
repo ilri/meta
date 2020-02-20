@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
     title = title + " * MySQLSynchrorise 1.0                                           * \n";
     title = title + " * This tool synchronise a MySQL database againts a SQite         * \n";
     title = title + " * snapshot file.                                                 * \n";
-    title = title + " * This tool is part of CSPro Tools (c) ILRI, 2013                * \n";
+    title = title + " * This tool is part of META (c) ILRI, 2013                * \n";
     title = title + " ****************************************************************** \n";
 
     TCLAP::CmdLine cmd(title.toUtf8().data(), ' ', "1.0 (Beta 1)");
