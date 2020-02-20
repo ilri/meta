@@ -93,10 +93,13 @@ META was built using:
 ## Building and testing
 To build this site for local viewing or development:
 
+    $ sudo apt install qt5-qmake qtbase5-dev
     $ git clone https://github.com/ilri/meta.git
     $ cd meta
-    $ qmake
+    $ qtchooser -run-tool=qmake -qt=5
     $ make
+
+This was tested on Ubuntu 18.04.
 
 ## Author
 Carlos Quiros (c.f.quiros_at_cgiar.org / cquiros_at_qlands.com)
