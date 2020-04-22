@@ -1,10 +1,10 @@
 # META
-META is a toolbox for managing research data in MySQL databases. It comprises of four command line tools performing different tasks. The toolbox is cross-platform and can be build in Windows, Linux and Mac. 
+META is a toolbox for managing research data in MySQL databases. It comprises of four command line tools performing different tasks. The toolbox is cross-platform and can be built on Windows, Linux and Mac. 
 
 ## The Toolbox
 
 ### InitMETA
-InitMETA initializes METAS's dictionary tables in a MySQL schema and generates the audit script files for both MySQL and snapshot file (SQLite).
+InitMETA initializes META's dictionary tables in a MySQL schema and generates the audit script files for both MySQL and snapshot file (SQLite).
 
 #### Parameters
   - H - MySQL host server. Default is localhost
@@ -25,7 +25,7 @@ $ ./initmeta -u my_user -p my_pass -s my_schema -c -l -u ./my_audit_directory
 ```
 
 ### MySQLToFile
-MySQLToFile converts a MySQL schema (with META's dictionary tables) into common human readable formats like STATA, SPSS and CSV; and interoperable formats like XML, JSON and SQL.
+MySQLToFile converts a MySQL schema (with META's dictionary tables) into common human-readable formats like STATA, SPSS and CSV and interoperable formats like XML, JSON and SQL.
 
 #### Parameters
   - H - MySQL host server. Default is localhost
@@ -36,8 +36,8 @@ MySQLToFile converts a MySQL schema (with META's dictionary tables) into common 
   - t - Table to be converted if only one table export is needed
   - d - Target directory for the export
   - o - Output format. For example STATA, SPSS, CSV, SQL, XML or JSON
-  - n - Value to be used in case of NULL. Default is 0 (cero)
-  - T - Include protected fields. In META you can define fields that contains sensitive data. By default MySQLToFile excluse such fields.
+  - n - Value to be used in case of NULL. Default is 0 (zero)
+  - T - Include protected fields. In META you can define fields that contain sensitive data. By default MySQLToFile excludes such fields.
 
 ##### Example
 
@@ -46,7 +46,7 @@ $ ./mysqltofile -u my_user -p my_pass -s my_schema -d ./my_target_directory -o S
 ```
 
 ### GenSnapshot
-GenSnapshot converts a MySQL schema (with META's dictionary tables) into a SQLite database (snapshot file) for off-line cleaning. The snapshot file records any changes in the data that later on could be synchronized against the MySQL server using *MySQLSync*.
+GenSnapshot converts a MySQL schema (with META's dictionary tables) into an SQLite database (snapshot file) for offline cleaning. The snapshot file records any changes in the data that could be synchronized against the MySQL server using *MySQLSync* later on.
 
 #### Parameters
   - H - MySQL host server. Default is localhost
@@ -64,7 +64,7 @@ $ ./gensnapshot -u my_user -p my_pass -s my_schema -a ./path_to_my_audit_file.sq
 ```
 
 ### MySQLSync
-MySQLSync synchronizes the changes made in a snapshot file against the data in the MySQL server. It generates two files 1) an output file with warnings and errors occurring during the synchronization in CSV format, and 2) an script file containing any INSERT, DELETE or UPDATE performed in the server. 
+MySQLSync synchronizes the changes made in a snapshot file against the data in the MySQL server. It generates two files 1) an output file with warnings and errors occurring during the synchronization in CSV format, and 2) a script file containing any INSERT, DELETE or UPDATE performed in the server. 
 
 #### Parameters
   - H - MySQL host server. Default is localhost
@@ -109,5 +109,4 @@ This repository contains the code of:
 
 - [TClap](http://tclap.sourceforge.net/) which is licensed under the [MIT license](https://raw.githubusercontent.com/twbs/bootstrap/master/LICENSE).
 
-
-Otherwise, the contents of this application is [GPL V3](http://www.gnu.org/copyleft/gpl.html). 
+Otherwise, the contents of this application is [GPLv3](http://www.gnu.org/copyleft/gpl.html). 
