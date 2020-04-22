@@ -91,7 +91,7 @@ META was built using:
 
 
 ## Building and testing
-To build this site for local viewing or development:
+To build this project:
 
     $ sudo apt install qt5-qmake qtbase5-dev libqt5sql5-mysql
     $ git clone https://github.com/ilri/meta.git
