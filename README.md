@@ -93,7 +93,7 @@ META was built using:
 ## Building and testing
 To build this site for local viewing or development:
 
-    $ sudo apt install qt5-qmake qtbase5-dev
+    $ sudo apt install qt5-qmake qtbase5-dev libqt5sql5-mysql
     $ git clone https://github.com/ilri/meta.git
     $ cd meta
     $ qtchooser -run-tool=qmake -qt=5
